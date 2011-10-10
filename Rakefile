@@ -38,17 +38,15 @@ def item_status( test_function, desc )
 end
 
 task :process do
-  list = dm.get_unprocessed()
+  list = dm.get_all()
   list.each do |photo|
-    ohai("Found image #{photo.title} (#{dm.short_url(photo)})")
+    ohai("Found image #{photo.title} (#{photo.short_url})")
     
-    po=dm.get_photo_obj(photo)
-    
-    if not item_status( dm.has_ptags?(po), "people tagged" )
+    if not item_status( photo.has_ptags?, "people tagged" )
       #puts "doing something"
     end
     
-    item_status( dm.in_set?(po), "in the dinnerwithyou photoset")
-    item_status( dm.has_placetag?(photo), "place tagged with a foursquare id")
+    item_status( photo.in_set?, "in the dinnerwithyou photoset")
+    item_status( photo.has_placetag?, "place tagged with a foursquare id")
   end
 end

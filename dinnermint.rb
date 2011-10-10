@@ -46,7 +46,12 @@ class DinnerMint
   
   #get all dinnerwithyou photos regardless of processed state
   def get_all
-    flickr.photos.search(:user_id => 'me', :tags => 'dinnerwithyou', :per_page => '500', :extras => 'geo,tags,machine_tags')
+    list = flickr.photos.search(:user_id => 'me', :tags => 'dinnerwithyou', :per_page => '500', :extras => 'geo,tags,machine_tags')
+    results = []
+    list.each do |p|
+      results << DMPhoto.new(p.id, p.title, p.tags, p.machine_tags )
+    end
+    return results
   end
     
   #get full photo object
@@ -54,32 +59,51 @@ class DinnerMint
     flickr.photos.getInfo(:photo_id => photo.id)
   end
   
-  def mark_processed(photo)
+end
+
+class DMPhoto
+  attr_accessor :id, :title, :tags, :machine_tags, :po
+  
+  def initialize(id,title,tags,machine_tags)
+    @id = id
+    @title = title
+    @tags = tags
+    @machine_tags = machine_tags
+    # @po = flickr.photos.getInfo(:photo_id => id) 
+    @po = nil #a full photo object for parsing convenience
+  end
+  
+  def init_po
+    #initalizing the photo object requires a new API call that can take a while, so we only want to do it when needed
+    @po = flickr.photos.getInfo(:photo_id => id) 
+  end
+  
+  def mark_processed
     flickr.photos.addTags(:photo_id => photo.id, :tags => $processed_tag)
   end
   
-  def has_ptags?(po)
-    po.people.haspeople != 0 #for now assume if it has a person in it, its the correct one
+  def has_ptags?
+    if @po.nil? then init_po end
+    @po.people.haspeople != 0 #for now assume if it has a person in it, its the correct one
   end
   
-  def add_ptags(photo)
-    flickr.photos.people.add(:photo_id => photo.id, :user_id => $tara_nsid)
+  def add_ptags
+    flickr.photos.people.add(:photo_id => @id, :user_id => $tara_nsid)
   end
 
-  def in_set?(photo)
-    $dwy_photoset_array.include?(photo.id)
+  def in_set?
+    $dwy_photoset_array.include?(@id)
   end
   
-  def has_placetag?(photo)
-    photo.machine_tags =~ /foursquare:venue=/
+  def has_placetag?
+    @machine_tags =~ /foursquare:venue=/
   end
   
-  def short_url(photo)
-    "http://flic.kr/p/#{Base58.encode(photo.id.to_i)}"
+  def short_url
+    "http://flic.kr/p/#{Base58.encode(@id.to_i)}"
   end
-  #if not tagged tara, add tag (?)
-  #if not person tagged tara, add person tag
-  #if not in proper set, add to set
-  #check and set title based on foursquare match
   
 end
+
+# dm=DinnerMint.new
+# binding.pry
