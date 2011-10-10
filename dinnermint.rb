@@ -30,29 +30,6 @@ class DinnerMint
     end
     return dwy
   end
-  
-
-  # get all unprocessed dinnerwithyou photos
-  def get_unprocessed
-    unprocessed = []
-    list = flickr.photos.search(:user_id => 'me', :tags => 'dinnerwithyou', :per_page => '500', :extras => 'geo,tags,machine_tags')
-    list.each do |photo|
-      if not photo.machine_tags =~ /$processed_tag/
-        unprocessed << photo
-      end
-    end
-    return unprocessed
-  end
-  
-  #get all dinnerwithyou photos regardless of processed state
-  def get_all
-    list = flickr.photos.search(:user_id => 'me', :tags => 'dinnerwithyou', :per_page => '500', :extras => 'geo,tags,machine_tags')
-    results = []
-    list.each do |p|
-      results << DMPhoto.new(p.id, p.title, p.tags, p.machine_tags )
-    end
-    return results
-  end
     
   #get full photo object
   def get_photo_obj(photo)
@@ -76,6 +53,19 @@ class DMPhoto
   def init_po
     #initalizing the photo object requires a new API call that can take a while, so we only want to do it when needed
     @po = flickr.photos.getInfo(:photo_id => id) 
+  end
+  
+  #get all unprocessed dinnerwithyou photos (pass :all to get 'em ALL!)
+  def self.find(opts={})
+    list = flickr.photos.search(:user_id => 'me', :tags => 'dinnerwithyou', :per_page => '5', :extras => 'geo,tags,machine_tags')
+    results = []
+    list.each do |p|
+      # binding.pry
+      if ((not p.machine_tags =~ /#{$processed_tag}/) || opts == :all) #true if 
+        results << DMPhoto.new(p.id, p.title, p.tags, p.machine_tags )
+      end
+    end
+    return results
   end
   
   def mark_processed

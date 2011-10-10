@@ -38,7 +38,7 @@ def item_status( test_function, desc )
 end
 
 task :process do
-  list = dm.get_all()
+  list = DMPhoto.find(:all)
   list.each do |photo|
     ohai("Found image #{photo.title} (#{photo.short_url})")
     
