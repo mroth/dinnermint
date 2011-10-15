@@ -7,3 +7,6 @@ gem 'base58'
 gem 'colored'
 gem 'choice'
 gem 'launchy'
+
+gem 'foursquare2'
+gem 'oauth2'
