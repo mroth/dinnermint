@@ -39,13 +39,14 @@ class DinnerMint
 end
 
 class DMPhoto
-  attr_accessor :id, :title, :tags, :machine_tags, :po
+  attr_accessor :id, :title, :tags, :machine_tags, :date_taken, :po
   
-  def initialize(id,title,tags,machine_tags)
+  def initialize(id,title,tags,machine_tags, date_taken)
     @id = id
     @title = title
     @tags = tags
     @machine_tags = machine_tags
+    @date_taken = date_taken
     # @po = flickr.photos.getInfo(:photo_id => id) 
     @po = nil #a full photo object for parsing convenience
   end
@@ -57,12 +58,12 @@ class DMPhoto
   
   #get all unprocessed dinnerwithyou photos (pass :all to get 'em ALL!)
   def self.find(opts={})
-    list = flickr.photos.search(:user_id => 'me', :tags => 'dinnerwithyou', :per_page => '5', :extras => 'geo,tags,machine_tags')
+    list = flickr.photos.search(:user_id => 'me', :tags => 'dinnerwithyou', :per_page => '10', :extras => 'date_taken,geo,tags,machine_tags')
     results = []
     list.each do |p|
       # binding.pry
       if ((not p.machine_tags =~ /#{$processed_tag}/) || opts == :all) #true if 
-        results << DMPhoto.new(p.id, p.title, p.tags, p.machine_tags )
+        results << DMPhoto.new(p.id, p.title, p.tags, p.machine_tags, p.datetaken )
       end
     end
     return results
@@ -87,6 +88,10 @@ class DMPhoto
   
   def has_placetag?
     @machine_tags =~ /foursquare:venue=/
+  end
+  
+  def has_generic_title?
+    @title =~ /photo.JPG/
   end
   
   def short_url
