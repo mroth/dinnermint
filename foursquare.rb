@@ -27,8 +27,8 @@ class FoursquareHelper
   def get_token
     puts "No foursquare user token, go auth us and get one, sucker!".red
     
-    client = OAuth2::Client.new(@client_id, @client_secret, {:site => 'https://foursquare.com/', :authorize_url => 'oauth2/authenticate'})
-    auth_url = @client.auth_code.authorize_url(
+    o_client = OAuth2::Client.new(@client_id, @client_secret, {:site => 'https://foursquare.com/', :authorize_url => 'oauth2/authenticate'})
+    auth_url = o_client.auth_code.authorize_url(
       :redirect_uri => 'http://mroth.github.com/foursquare-token-echo/', 
       :response_type => 'token'
     )
