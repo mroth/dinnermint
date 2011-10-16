@@ -73,6 +73,10 @@ class DMPhoto
     @machine_tags =~ /foursquare:venue=/
   end
   
+  def add_placetag(pid)
+    flickr.photos.addTags(:photo_id => @id, :tags => "foursquare:venue=#{pid}")
+  end
+  
   def has_generic_title?
     @title =~ /photo.JPG/
   end

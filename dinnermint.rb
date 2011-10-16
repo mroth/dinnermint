@@ -68,6 +68,10 @@ def process
       else
         canduz "iz match close enuf? [#{'YEP'.green}]"
         didit "add machinetag foursquare:venue=#{match.checkin.venue.id}"
+        if not Choice[:dryrun]
+          photo.add_placetag(match.checkin.venue.id)
+          izdun
+        end
         placetags_added += 1
       end
     end
