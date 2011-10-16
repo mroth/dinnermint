@@ -37,11 +37,11 @@ class DMPhoto
   
   #get all unprocessed dinnerwithyou photos (pass :all to get 'em ALL!)
   def self.find(opts={})
-    list = flickr.photos.search(:user_id => 'me', :tags => 'dinnerwithyou', :per_page => '10', :extras => 'date_taken,geo,tags,machine_tags')
+    list = flickr.photos.search(:user_id => 'me', :tags => 'dinnerwithyou', :per_page => opts[:max], :extras => 'date_taken,geo,tags,machine_tags')
     results = []
     list.each do |p|
       # binding.pry
-      if ((not p.machine_tags =~ /#{$processed_tag}/) || opts == :all) #true if 
+      if ((not p.machine_tags =~ /#{$processed_tag}/) || opts[:all]) #true if 
         results << DMPhoto.new(p.id, p.title, p.tags, p.machine_tags, p.datetaken )
       end
     end

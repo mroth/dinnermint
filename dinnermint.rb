@@ -11,11 +11,29 @@ require 'foursquare'
 require 'status'
 include Status 
 
+Choice.options do
+  option :dryrun do
+    long '--dryrun'
+    desc 'Do not actually make changes, just show what would we done'
+  end
+  option :max do
+    short '-n'
+    long '--num=NUM'
+    desc 'Maximum amount of photos to parse'
+    default 20
+  end
+  option :all do
+    short '-a'
+    long '--all'
+    desc "Process all photos, not just previously unprocessed ones."
+    default true #TODO: change me when done debugging
+  end
+end
 
 def process
   FlickrAuth.auth_setup('write')
   FlickrAuth.do_login()
-  list = DMPhoto.find(:all)
+  list = DMPhoto.find(:all => Choice[:all], :max => Choice[:max])
   fs = FoursquareHelper.new
   
   peopletags_added = 0
