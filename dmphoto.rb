@@ -5,10 +5,10 @@ require 'base58'
 class DMPhoto
   attr_accessor :id, :title, :tags, :machine_tags, :date_taken, :po
   
-  $processed_tag = 'dinnermint:processed=true'
-  $tag = 'dinnerwithyou'
-  $tara_nsid = '97506353@N00'
-  $dwy_photoset_id = '72157624485313757'
+  PROCESSED_TAG = 'dinnermint:processed=true'
+  DWY_TAG = 'dinnerwithyou'
+  TARA_NSID = '97506353@N00'
+  DWY_PHOTOSET_ID = '72157624485313757'
   
   def initialize(id,title,tags,machine_tags, date_taken)
     @id = id
@@ -27,7 +27,7 @@ class DMPhoto
   end
   
   def init_dwy_photoset_array
-    resp=flickr.photosets.getPhotos(:photoset_id =>$dwy_photoset_id)
+    resp=flickr.photosets.getPhotos(:photoset_id => DWY_PHOTOSET_ID)
     dwy=[]
     resp.photo.each do |p|
       dwy << p.id
@@ -37,11 +37,11 @@ class DMPhoto
   
   #get all unprocessed dinnerwithyou photos (pass :all to get 'em ALL!)
   def self.find(opts={})
-    list = flickr.photos.search(:user_id => 'me', :tags => 'dinnerwithyou', :per_page => opts[:max], :extras => 'date_taken,geo,tags,machine_tags')
+    list = flickr.photos.search(:user_id => 'me', :tags => DWY_TAG, :per_page => opts[:max], :extras => 'date_taken,geo,tags,machine_tags')
     results = []
     list.each do |p|
       # binding.pry
-      if ((not p.machine_tags =~ /#{$processed_tag}/) || opts[:all]) #true if 
+      if ((not p.machine_tags =~ /#{PROCESSED_TAG}/) || opts[:all]) #true if 
         results << DMPhoto.new(p.id, p.title, p.tags, p.machine_tags, p.datetaken )
       end
     end
@@ -49,7 +49,7 @@ class DMPhoto
   end
   
   def mark_processed
-    flickr.photos.addTags(:photo_id => photo.id, :tags => $processed_tag)
+    flickr.photos.addTags(:photo_id => photo.id, :tags => PROCESSED_TAG)
   end
   
   def has_ptags?
@@ -57,12 +57,16 @@ class DMPhoto
     @po.people.haspeople != 0 #for now assume if it has a person in it, its the correct one
   end
   
-  def add_ptags
-    flickr.photos.people.add(:photo_id => @id, :user_id => $tara_nsid)
+  def add_ptags!
+    flickr.photos.people.add(:photo_id => @id, :user_id => TARA_NSID)
   end
 
   def in_set?
     @dwy_photoset_array.include?(@id)
+  end
+  
+  def add_set!
+    flickr.photosets.addPhoto(:photo_id => @id, :photoset_id => DWY_PHOTOSET_ID)
   end
   
   def has_placetag?

@@ -45,11 +45,18 @@ def process
     
     if not item_status( photo.has_ptags?, "people tagged" )
       didit "add person tag 97506353@N00"
+      if not Choice[:dryrun]
+        photo.add_ptags!
+      end
       peopletags_added += 1
     end
     
     if not item_status( photo.in_set?, "in the dinnerwithyou photoset")
       didit "add to photoset 72157624485313757"
+      if not Choice[:dryrun]
+        photo.add_set!
+        izdun
+      end
       photosets_added += 1
     end
 

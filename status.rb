@@ -14,8 +14,16 @@ module Status
   def canduz(msg)
     puts "\t--- #{msg}"
   end
-  def didit(msg)
-    puts "\t*** #{msg}".yellow
+  def didit(msg, notrly = Choice[:dryrun])
+    if notrly
+      puts "\t*** #{msg}".yellow + " *".white.bold
+    else
+      puts "\t*** #{msg}".yellow
+    end
+  end
+  
+  def izdun
+    puts "\t\t...done!".white.bold
   end
 
   def item_status( test_function, desc )

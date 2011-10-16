@@ -49,7 +49,7 @@ module FlickrAuth
     puts "Opening web browser to do Flickr auth process"
     Launchy.open(auth_url)
     print "Copy here the number given when you complete the process: "
-    verify = gets.strip
+    verify = STDIN.gets.strip
   
     begin
       flickr.get_access_token(token['oauth_token'], token['oauth_token_secret'], verify)
