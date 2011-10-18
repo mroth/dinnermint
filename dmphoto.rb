@@ -81,6 +81,14 @@ class DMPhoto
     @title =~ /photo.JPG/
   end
   
+  def is_processed?
+    @machine_tags =~ /#{PROCESSED_TAG}/
+  end
+  
+  def mark_processed!
+    flickr.photos.addTags(:photo_id => @id, :tags => "#{PROCESSED_TAG}")
+  end
+  
   def short_url
     "http://flic.kr/p/#{Base58.encode(@id.to_i)}"
   end

@@ -75,6 +75,10 @@ def process
         placetags_added += 1
       end
     end
+    
+    if not item_status( photo.is_processed?, "marked processed by dinnermint" )
+      #TODO
+    end
   end
   
   puts "\n\n*********** STATS FEST '99 ***********".white.bold
