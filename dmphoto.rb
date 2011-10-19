@@ -45,7 +45,7 @@ class DMPhoto
     results = []
     list.each do |p|
       # binding.pry
-      print '.'
+      # print '.'
       if ((not p.machine_tags =~ /#{PROCESSED_TAG}/) || opts[:all]) #true if 
         results << DMPhoto.new(p.id, p.title, p.tags, p.machine_tags, p.datetaken )
       end
