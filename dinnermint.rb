@@ -26,7 +26,7 @@ Choice.options do
     short '-a'
     long '--all'
     desc "Process all photos, not just previously unprocessed ones."
-    default true #TODO: change me when done debugging
+    default false #TODO: change me when done debugging
   end
 end
 
@@ -60,10 +60,13 @@ def process
       photosets_added += 1
     end
 
+    match = fs.historyMatch( Time.parse(photo.date_taken) )
+    matched = (match.distance.abs < 3600) #within the hour
+    
     if not item_status( photo.has_placetag?, "place tagged with a foursquare id")
-      match = fs.historyMatch( Time.parse(photo.date_taken) )
+      #match = fs.historyMatch( Time.parse(photo.date_taken) )
       canduz "closest match: #{match.distance} seconds difference at \"#{match.checkin.venue.name.bold}\""
-      if (match.distance.abs > 3600) #within the hour
+      if !matched 
         canduz "iz match close enuf? [#{'NOWAI'.red}]"
       else
         canduz "iz match close enuf? [#{'YEP'.green}]"
@@ -76,8 +79,24 @@ def process
       end
     end
     
+    if not item_status(  !photo.has_generic_title?, "in possession of a non-generic title" )
+      if matched
+        didit "set title to \"#{match.checkin.venue.name}\"" #match isnt instantiated if there is arelady a 4s id..
+        if not Choice[:dryrun]
+          photo.set_title(match.checkin.venue.name)
+          izdun
+        end
+      else
+        canduz "can't do shit about that"
+      end
+    end
+    
     if not item_status( photo.is_processed?, "marked processed by dinnermint" )
-      #TODO
+      didit "marking processed"
+      if not Choice[:dryrun]
+        photo.mark_processed!
+        izdun
+      end
     end
   end
   

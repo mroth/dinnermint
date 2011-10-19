@@ -41,6 +41,7 @@ class DMPhoto
     results = []
     list.each do |p|
       # binding.pry
+      print '.'
       if ((not p.machine_tags =~ /#{PROCESSED_TAG}/) || opts[:all]) #true if 
         results << DMPhoto.new(p.id, p.title, p.tags, p.machine_tags, p.datetaken )
       end
@@ -79,6 +80,10 @@ class DMPhoto
   
   def has_generic_title?
     @title =~ /photo.JPG/
+  end
+  
+  def set_title(title)
+    flickr.photos.setMeta( :photo_id => @id, :title => title)
   end
   
   def is_processed?
