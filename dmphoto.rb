@@ -37,7 +37,7 @@ class DMPhoto
   
   #get all unprocessed dinnerwithyou photos (pass :all to get 'em ALL!)
   def self.find(opts={})
-    list = flickr.photos.search(:user_id => 'me', :tags => DWY_TAG, :per_page => opts[:max], :extras => 'date_taken,geo,tags,machine_tags')
+    list = flickr.photos.search(:user_id => 'me', :tags => DWY_TAG, :per_page => opts[:max] || 500, :extras => 'date_taken,geo,tags,machine_tags')
     results = []
     list.each do |p|
       # binding.pry
