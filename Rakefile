@@ -26,7 +26,7 @@ task :no4sq => [:auth] do
   list = DMPhoto.find(:all => true)
   list.each do |photo|
     if not photo.has_placetag?
-      canduz "#{photo.title.bold} (#{photo.short_url}) has no placetitle..."
+      canduz "#{photo.title.bold} (#{photo.short_url}) has no placetag..."
     end
   end  
 end
