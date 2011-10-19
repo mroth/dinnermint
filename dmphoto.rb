@@ -17,7 +17,6 @@ class DMPhoto
     @tags = tags
     @machine_tags = machine_tags
     @date_taken = date_taken
-    # @po = flickr.photos.getInfo(:photo_id => id) 
     @po = nil #a full photo object for parsing convenience
     init_dwy_photoset_array()
   end
@@ -27,7 +26,10 @@ class DMPhoto
     @po = flickr.photos.getInfo(:photo_id => id) 
   end
   
+  #
   # return existing array if already init'd, otherwise generate
+  # we want to keep this list to compare against instead of checking for each photo to save API calls
+  #
   def init_dwy_photoset_array
     if @@dwy_photoset_array.nil?
       resp=flickr.photosets.getPhotos(:photoset_id => DWY_PHOTOSET_ID)

@@ -17,6 +17,7 @@ task :clear_processed  => [:auth] do
   list.each do |photo|
     if photo.is_processed?
       canduz "marking photo #{photo.title} as unprocessed..."
+      #TODO: actually do this!
     end
   end
 end

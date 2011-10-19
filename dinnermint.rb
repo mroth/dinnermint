@@ -23,7 +23,7 @@ Choice.options do
     short '-a'
     long '--all'
     desc "Process all photos, not just previously unprocessed ones."
-    default false #TODO: change me when done debugging
+    default false
   end
 end
 
