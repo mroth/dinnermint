@@ -4,6 +4,7 @@ require 'base58'
 
 class DMPhoto
   attr_accessor :id, :title, :tags, :machine_tags, :date_taken, :po
+  @@dwy_photoset_array = nil
   
   PROCESSED_TAG = 'dinnermint:processed=true'
   DWY_TAG = 'dinnerwithyou'
@@ -18,7 +19,7 @@ class DMPhoto
     @date_taken = date_taken
     # @po = flickr.photos.getInfo(:photo_id => id) 
     @po = nil #a full photo object for parsing convenience
-    @dwy_photoset_array = init_dwy_photoset_array
+    init_dwy_photoset_array()
   end
   
   def init_po
@@ -26,13 +27,17 @@ class DMPhoto
     @po = flickr.photos.getInfo(:photo_id => id) 
   end
   
+  # return existing array if already init'd, otherwise generate
   def init_dwy_photoset_array
-    resp=flickr.photosets.getPhotos(:photoset_id => DWY_PHOTOSET_ID)
-    dwy=[]
-    resp.photo.each do |p|
-      dwy << p.id
+    if @@dwy_photoset_array.nil?
+      resp=flickr.photosets.getPhotos(:photoset_id => DWY_PHOTOSET_ID)
+      dwy=[]
+      resp.photo.each do |p|
+        dwy << p.id
+      end
+      @@dwy_photoset_array = dwy
+    else
     end
-    return dwy
   end
   
   #get all unprocessed dinnerwithyou photos (pass :all to get 'em ALL!)
@@ -63,7 +68,7 @@ class DMPhoto
   end
 
   def in_set?
-    @dwy_photoset_array.include?(@id)
+    @@dwy_photoset_array.include?(@id)
   end
   
   def add_set!
