@@ -18,4 +18,4 @@ Usage: dinnermint.rb [-na]
 ```
 
 ### Screenshot
-!(screenshot)[https://img.skitch.com/20111016-pcsbme965fdjdhn4r3kc5kchu2.png]
+![screenshot](https://img.skitch.com/20111016-pcsbme965fdjdhn4r3kc5kchu2.png)
