@@ -1,8 +1,5 @@
 #!/usr/bin/env ruby
-require 'flickraw'
-require 'colored'
 require 'choice'
-require 'pry'
 
 $LOAD_PATH << '.'
 require 'flickrauth'

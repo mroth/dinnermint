@@ -36,7 +36,6 @@ class DMPhoto
         dwy << p.id
       end
       @@dwy_photoset_array = dwy
-    else
     end
   end
   
