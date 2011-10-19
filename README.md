@@ -2,7 +2,7 @@ I have a private set of photos on Flickr where I categories everywhere my girlfr
 
 What the main script does:
 
- - pulls all my Flickr photos tagged 'dinnerwithyou'
+ - pulls all my Flickr photos with a specific tag
  - checks to make sure they are in the correct set
  - checks to make sure they are properly people-tagged
  - does fuzzy matching with my foursquare checkins, and place-tag the photos based on those, as well as correct the title to the proper restaurant name
