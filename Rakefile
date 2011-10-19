@@ -13,12 +13,22 @@ end
 
 desc "clear the list of which files have been processed"
 task :clear_processed  => [:auth] do
-  list = DMPhoto.find(:all)
+  list = DMPhoto.find(:all => true)
   list.each do |photo|
     if photo.is_processed?
       canduz "marking photo #{photo.title} as unprocessed..."
     end
   end
+end
+
+desc "show any photos without a foursquare id"
+task :no4sq => [:auth] do
+  list = DMPhoto.find(:all => true)
+  list.each do |photo|
+    if not photo.has_placetag?
+      canduz "#{photo.title.bold} (#{photo.short_url}) has no placetitle..."
+    end
+  end  
 end
 
 # desc "show which files matching the tag have been processed and which have not"
